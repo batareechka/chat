@@ -34,25 +34,26 @@ function init() {
 				userMessage.addEventListener('keydown', function(event) {									
 					if(event.which === 13 && event.shiftKey === false) {
 						event.preventDefault();
-						sendMessage();
+						sendMessage(socket, userName, userMessage);
 					}					
 				});
 
-				sendBtn.addEventListener('click', sendMessage);
+				sendBtn.addEventListener('click', sendMessage(socket, userName, userMessage));
 				
 			}
-
-			function getNode(s) {
-				return document.querySelector(s);
-			}
-
-			function sendMessage() {
-				var data = {
-					name: userName.value || "Mister X",
-					message: userMessage.value
-				};
-
-				socket.emit('input', data);			
-				userMessage.value = '';			
-			}			
+								
 		}
+
+		function getNode(s) {
+			return document.querySelector(s);
+		}
+
+		function sendMessage(socket, userName, userMessage) {
+			var data = {
+				name: userName.value || "Mister X",
+				message: userMessage.value
+			};
+
+			socket.emit('input', data);			
+			userMessage.value = '';			
+		}	
