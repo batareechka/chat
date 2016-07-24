@@ -1,19 +1,14 @@
 function init() {	
 
-	var textarea = $('.chat textarea'),
-	chatName = $('.chat-name'),
-	messages = $('.chat-messages'),
-	nameBtn = $('.nameButton'),
-	submitBtn = $('.textSubmit');
+	var userMessage = $('.user-message'),
+			userName = $('.user-name'),
+			messages = $('.messages-list'),
+			sendBtn = $('.send-btn');	
 
-	var userName;
-	nameBtn.click(function() {
-		userName = chatName.val() || 'MisterX';
-	});
 
-	submitBtn.on('click', sendMessage);
+	sendBtn.on('click', sendMessage);
 
-	textarea.on('keydown', function() {
+	userMessage.on('keydown', function() {
 		if(event.which === 13 && event.shiftKey === false) {
 			event.preventDefault();
 			sendMessage();			
@@ -22,11 +17,11 @@ function init() {
 
 	var getData = function() {
 
-		$.getJSON('/messages', function(msg) {
+		$.getJSON('/messages', function(data) {
 			messages.html('');
-			for(var i in msg){
-				if(msg.hasOwnProperty(i)) {
-					messages.append($('<div>').text(msg[i].name + ': ' + msg[i].message));
+			for(var i in data){
+				if(data.hasOwnProperty(i)) {
+					messages.append($('<div>').text(data[i].name + ': ' + data[i].message));
 				}
 			}
 		});
@@ -39,10 +34,10 @@ function init() {
 
 	function sendMessage() {
 		var data = {
-				name: chatName.val() || 'MisterX',
-				message: textarea.val()
+				name: userName.val() || 'Mister X',
+				message: userMessage.val()
 			};
-			textarea.val('');
+			userMessage.val('');
 
 			$.post('/messages', data);
 	}

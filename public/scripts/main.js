@@ -1,9 +1,9 @@
 function init() {	
 
-	var textarea = getNode('.chat textarea'),
-			chatName = getNode('.chat-name'),
-			messages = getNode('.chat-messages'),
-			submitBtn = getNode('.textSubmit');	
+	var userMessage = getNode('.user-message'),
+			userName = getNode('.user-name'),
+			messages = getNode('.messages-list'),
+			sendBtn = getNode('.send-btn');	
 
 	try {
 		var socket = io.connect('http://127.0.0.1:8080');
@@ -17,25 +17,28 @@ function init() {
 				//выгрузка сообщений
 				socket.on('output', function(data) {
 					if(data.length) {
-						for (var i = 0; i< data.length; i++){
-							var message = document.createElement('div');
-							message.setAttribute('class', 'chat-message');
-							message.textContent = data[i].name + ': ' + data[i].message;
+						// for (var i = 0; i< data.length; i++){
+							for(var i in data){
+								if(data.hasOwnProperty(i)){
+							var messageItem = document.createElement('div');
+							messageItem.setAttribute('class', 'message-item');
+							messageItem.textContent = data[i].name + ': ' + data[i].message;
 
-							messages.appendChild(message);
+							messages.appendChild(messageItem);
 						}
+					}
 					}
 				});
 
 				//отправка сообщений
-				textarea.addEventListener('keydown', function(event) {									
+				userMessage.addEventListener('keydown', function(event) {									
 					if(event.which === 13 && event.shiftKey === false) {
 						event.preventDefault();
 						sendMessage();
 					}					
 				});
 
-				submitBtn.addEventListener('click', sendMessage);
+				sendBtn.addEventListener('click', sendMessage);
 				
 			}
 
@@ -44,14 +47,12 @@ function init() {
 			}
 
 			function sendMessage() {
-				var name = chatName.value;	
 				var data = {
-					name: name,
-					message: textarea.value
+					name: userName.value || "Mister X",
+					message: userMessage.value
 				};
 
 				socket.emit('input', data);			
-				textarea.value = '';			
-				console.log('inserted');
+				userMessage.value = '';			
 			}			
 		}
